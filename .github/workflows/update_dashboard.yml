@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r app_requirements.txt
+          pip install -r requirements.txt
 
       - name: Execute script
         run: python update_data.py
