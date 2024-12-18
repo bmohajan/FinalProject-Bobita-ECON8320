@@ -3,6 +3,4 @@ json
 numpy
 pandas
 streamlit
-plotly
-pydeck
 datetime
