@@ -1,6 +1,7 @@
-requests
-json
 numpy
 pandas
+pydeck
 streamlit
+plotly
 datetime
+requests
