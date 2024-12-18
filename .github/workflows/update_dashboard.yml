@@ -1,0 +1,54 @@
+name: Update Data and Dashboard
+
+on:
+  schedule:
+    - cron: '0 0 1 * *' # Run on the 1st of every month at 00:00
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x' # Replace with your desired Python version
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt 
+          # Make sure to have a requirements.txt with streamlit, pandas, plotly, etc.
+
+      - name: Fetch new data 
+        run: |
+          python fetch_new_data.py
+          # This script should download the latest data and update your data.csv
+
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data.csv
+          git commit -m 'Update data'
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main 
+
+  deploy-to-streamlit-cloud:
+    runs-on: ubuntu-latest
+    needs: update-data # Ensure data is updated first
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to Streamlit Cloud
+        uses: streamlit/streamlit-deploy-action@v1
+        with:
+          api_key: ${{ secrets.STREAMLIT_API_KEY }} 
+          branch: main 
+          app_name: "My Economic Dashboard" # Replace with your app name
